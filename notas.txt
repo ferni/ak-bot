@@ -1,0 +1,3 @@
+que no flattr cuando el usuario le contesta al bot.
+
+quizas solo un reply por thread para cada usuario.
