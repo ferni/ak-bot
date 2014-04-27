@@ -65,11 +65,16 @@ nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(fun
     }
 
     function checkComments() {
+        var wait = timeBetweenChecks - (new Date() - lastCheckTime);
+        if (wait < 0) {
+            wait = 0;
+        }
+        console.log('Waiting ' + wait + ' before checking again.');
         setTimeout(function() {
             lastCheckTime = new Date();
             console.log('Checking new comments. Time:' + lastCheckTime);
             bot.listing('/r/friends/comments', {before: lastCommentRepliedTo}).then(dealWithComments);
-        }, timeBetweenChecks - (new Date() - lastCheckTime));
+        }, wait);
     }
 
     checkComments();
