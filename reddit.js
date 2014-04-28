@@ -13,7 +13,7 @@ exports.login = function(callback) {
             rem: true
         },
         headers: {
-            'User-Agent': 'AssKissingBotTest 0.0.1',
+            'User-Agent': 'AssKissingBotTest 0.0.1'
         },
         proxy : "http://127.0.0.1:8888"
     }, function(error, response, body) {
