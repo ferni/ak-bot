@@ -32,7 +32,7 @@ function dealWithComments(bot) {
             console.log('Found ' + count + '!');
         } else {
             console.log('Found none.');
-            checkComments();
+            checkComments(bot);
         }
         console.log(JSON.stringify(comments));
         _.each(comments, function(c, thingID) {
@@ -43,13 +43,13 @@ function dealWithComments(bot) {
                 lastCommentRepliedTo = thingID;
                 dealtWith++;
                 if (dealtWith >= count) {
-                    checkComments();
+                    checkComments(bot);
                 }
             }, function(error) {
                 console.log('There was a problem trying to comment: ' + error);
                 dealtWith++;
                 if (dealtWith >= count) {
-                    checkComments();
+                    checkComments(bot);
                 }
             });
 
@@ -76,13 +76,15 @@ function getFriends(bot) {
     });
 }
 
-function initSubscriptions(bot) {
-
+function updateLastComment(bot) {
+    return bot.listing('/user/AssKissingBot/comments', {max: 1}).then(function(comments) {
+        lastCommentRepliedTo = _.values(comments)[0].parent_id;
+        console.log('last comment: ' + lastCommentRepliedTo);
+    })
 }
 
 nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
-    getFriends(bot).then(function(friends) {
-        console.log(JSON.stringify(friends));
+    updateLastComment(bot).then(function() {
+        checkComments(bot);
     });
-    //checkComments(bot);
 });
