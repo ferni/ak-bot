@@ -1,4 +1,8 @@
 var akb = {};
+var footer = '\n\n***\n\n' +
+    '[^(^Tip )](https://www.changetip.com/tip-online/reddit) ' +
+    '^(^to ^get ^this ^bot ^attached ^to ^you. ) ' +
+    '[^(^Detach ^here)](http://www.reddit.com)^^.';
 akb.replies = {
     standard: [
         'Well put!',
@@ -12,7 +16,7 @@ akb.replies = {
         'I think this is your best comment yet.',
         'You have such wisdom.',
         'How I haven\'t thought of that?!',
-        'If this doesn\'t deserve gold, I don\'t know which does.',
+        'If this doesn\'t deserve gold, I don\'t know what does.',
         'A smashing comment.',
         'You are a gentleman and a scholar.',
         //overly attached
@@ -46,7 +50,9 @@ akb.random = function(stringArray) {
 };
 
 akb.getComment = function(parent) {
-
+    var comment = akb.random(akb.replies.standard);
+    comment+= footer;
+    return comment;
 };
 
 module.exports = akb;

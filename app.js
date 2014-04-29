@@ -37,9 +37,9 @@ function dealWithComments(bot) {
         console.log(JSON.stringify(comments));
         _.each(comments, function(c, thingID) {
             console.log('CommentID: ' + thingID + '; Comment text:' + c.body);
-            bot.comment(thingID, akb.random(akb.replies.standard)).then(function(c1) {
+            bot.comment(thingID, akb.getComment(c)).then(function(c1) {
                 console.log('Comment function returns: ' + JSON.stringify(c1));
-                console.log('I think I replied: ' + c1.body);
+                console.log('I think I replied: ' + c1.json.data.things[0].data.contentText);
                 lastCommentRepliedTo = thingID;
                 dealtWith++;
                 if (dealtWith >= count) {
