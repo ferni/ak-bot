@@ -20,12 +20,17 @@ You have such wisdom.
 ----------
 How I haven't thought of that?!
 ----------
-If this commnet doesn't deserve gold, I don't know what does.
+If this comment doesn't deserve gold, I don't know what does.
 ----------
 An <adjective> comment.
 : inspiring, sublime, smashing
 
+NEW
 
+You are a gentleman and a scholar.
+
+[Gifs?]
+que upvotean
 
 [Pregunta]
 --------------
@@ -48,3 +53,28 @@ You completely destroyed him.
 All excellent points.
 -----------
 
+[Special]
+------------
+(When downvoted) You should hang more in <other subreddit>; these people don't appreciate you at all.
+------------
+<subreddit> should take heed of you.
+------------
+This reminds me a lot of this comment you made on <subreddit>: <quote>
+------------
+You say the word <word> a lot <3
+------------
+This reminds me of [this post](<link to post>) you made in <subreddit>
+
+
+[Standalone comment on OAG posts]
+-----------
+I don't get it. This is normal to me.
+-----------
+She's just making conversation!
+-----------
+So what?
+-----------
+I agree with her, though.
+-----------
+
+You don't get it, that's how she expresses her love.
