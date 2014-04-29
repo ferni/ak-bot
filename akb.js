@@ -1,5 +1,5 @@
 var akb = {};
-var footer = '\n\n***\n\n' +
+var footer = '\n\n \n\n***\n\n' +
     '[^(^Tip )](https://www.changetip.com/tip-online/reddit) ' +
     '^(^to ^get ^this ^bot ^attached ^to ^you. ) ' +
     '[^(^Detach ^here)](http://www.reddit.com)^^.';
