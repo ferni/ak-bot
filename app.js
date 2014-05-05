@@ -5,24 +5,10 @@ var creds = require('./credentials'),
     akb = require('./akb'),
     _ = require('underscore')._;
 
-
-
 var lastCommentRepliedTo = 't1_ch33hcb',
-    subscriptions = [],
     lastCheckTime = new Date(),
     timeBetweenChecks = 30500;
 
-function Reply() {
-    this.parentID;
-    this.replyIndex;
-}
-
-function Subscription() {
-    this.username;
-    this.replies;
-    //should only reply to comments after the subscription date
-    this.date;
-}
 
 function dealWithComments(bot) {
     return function(comments) {
@@ -62,10 +48,8 @@ function checkComments(bot) {
     if (wait < 0) {
         wait = 0;
     }
-    console.log('Waiting ' + wait + ' before checking again.');
     setTimeout(function() {
         lastCheckTime = new Date();
-        console.log('Checking new comments. Time:' + lastCheckTime);
         bot.listing('/r/friends/comments', {before: lastCommentRepliedTo}).then(dealWithComments(bot));
     }, wait);
 }
