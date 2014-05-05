@@ -83,6 +83,11 @@ function updateLastComment(bot) {
     })
 }
 
+function itsATip(message) {
+    return message.author === 'changetip' &&
+        message.body.indexOf('Hi AssKissingBot,\n\n**You\'ve been tipped with /r/changetip!**') === 0;
+}
+
 nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
     updateLastComment(bot).then(function() {
         checkComments(bot);
@@ -97,6 +102,13 @@ nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(fun
                 }
                 first = false;
                 console.log(m.author + ': "' + m.body + '"');
+                if (itsATip(m)) {
+                    console.log('I\'ve been totally tipped!');
+                } else if (m.author === 'changetip') {
+                    console.log('WARNING: Got a message from changetip that' +
+                        ' was not detected as a tip.');
+                }
+
                 ids += id;
             });
             if (_.size(messages) > 0) {
