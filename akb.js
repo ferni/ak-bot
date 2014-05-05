@@ -19,8 +19,6 @@ akb.replies = {
         'If this doesn\'t deserve gold, I don\'t know what does.',
         'A smashing comment.',
         'You are a gentleman and a scholar.',
-        //overly attached
-        '<3',
         'LOL!',
         'You\'re an inspiration to me.',
         'This should be the top comment.',
@@ -35,7 +33,8 @@ akb.replies = {
         '(name), you\'re the best.',//generous tip
         'No, you\'re the best!',//when improving generous tip
         'Thank you (name). Pretty cool username btw.',
-        'You\'re pretty cool! I bet there\'s lots of interesting stuff in your history.'
+        'You\'re pretty cool! I bet there\'s lots of interesting stuff in your history.',
+        'You\'re my new idol.'
     ]
 };
 
