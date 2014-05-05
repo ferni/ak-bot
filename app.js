@@ -72,43 +72,47 @@ function itsATip(message) {
         message.body.indexOf('Hi AssKissingBot,\n\n**You\'ve been tipped with /r/changetip!**') === 0;
 }
 
+function checkReplies(bot) {
+    bot.listing('/message/unread').then(function(messages) {
+        var ids = '',
+            first = true;
+        _.each(messages, function(m, id) {
+            if (!first) {
+                ids += ',';
+            }
+            first = false;
+            console.log(m.author + ': "' + m.body + '"');
+            if (itsATip(m)) {
+                console.log('I\'ve been totally tipped!');
+            } else if (m.author === 'changetip') {
+                console.log('WARNING: Got a message from changetip that' +
+                    ' was not detected as a tip.');
+            }
+
+            ids += id;
+        });
+        if (_.size(messages) > 0) {
+            console.log('marking as read: ' + ids);
+            bot.post('http://www.reddit.com/api/read_message', {
+                form: {
+                    id: ids,
+                    uh: bot.session.modhash
+                }
+            }).then(function() {
+                console.log('messages marked as read.');
+            }, function(error) {
+                console.log('Error reading messages: ' + error);
+            });
+        }
+
+    });
+}
+
 nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
     updateLastComment(bot).then(function() {
         checkComments(bot);
     });
     setInterval(function() {
-        bot.listing('/message/unread').then(function(messages) {
-            var ids = '',
-                first = true;
-            _.each(messages, function(m, id) {
-                if (!first) {
-                    ids += ',';
-                }
-                first = false;
-                console.log(m.author + ': "' + m.body + '"');
-                if (itsATip(m)) {
-                    console.log('I\'ve been totally tipped!');
-                } else if (m.author === 'changetip') {
-                    console.log('WARNING: Got a message from changetip that' +
-                        ' was not detected as a tip.');
-                }
-
-                ids += id;
-            });
-            if (_.size(messages) > 0) {
-                console.log('marking as read: ' + ids);
-                bot.post('http://www.reddit.com/api/read_message', {
-                    form: {
-                        id: ids,
-                        uh: bot.session.modhash
-                    }
-                }).then(function() {
-                    console.log('messages marked as read.');
-                }, function(error) {
-                    console.log('Error reading messages: ' + error);
-                });
-            }
-
-        });
+        checkReplies(bot);
     }, 35000);
 });
