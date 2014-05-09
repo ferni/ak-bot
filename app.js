@@ -72,6 +72,14 @@ function itsATip(message) {
         message.body.indexOf('Hi AssKissingBot,\n\n**You\'ve been tipped with /r/changetip!**') === 0;
 }
 
+function parseTip(text) {
+    var words = text.substring(63).split(' ', 9),
+        user = words[2].substring(3),
+        amount = words[5],
+        unit = words[6];
+    console.log('tip: user: ' + user + '; amount: ' + amount + '; unit: ' + unit);
+}
+
 function checkReplies(bot) {
     bot.listing('/message/unread').then(function(messages) {
         var ids = '',
@@ -84,6 +92,7 @@ function checkReplies(bot) {
             console.log(m.author + ': "' + m.body + '"');
             if (itsATip(m)) {
                 console.log('I\'ve been totally tipped!');
+                parseTip(m.body);
             } else if (m.author === 'changetip') {
                 console.log('WARNING: Got a message from changetip that' +
                     ' was not detected as a tip.');
