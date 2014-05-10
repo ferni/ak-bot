@@ -23,10 +23,13 @@ function handleComments(bot) {
         }
         console.log(JSON.stringify(comments));
         _.each(comments, function(c, thingID) {
+            var reply;
             console.log('CommentID: ' + thingID + '; Comment text:' + c.body);
-            bot.comment(thingID, akb.getComment(c)).then(function(c1) {
-                console.log('Comment function returns: ' + JSON.stringify(c1));
-                console.log('I think I replied: ' + c1.json.data.things[0].data.contentText);
+            console.log('COMMENT (c):' + JSON.stringify(c));
+            reply = akb.getComment(c);
+            bot.comment(thingID, reply).then(function(c1) {
+                console.log('COMMENT (c1):' + JSON.stringify(c1));
+                console.log('@' + c1.author + ': ' + reply);
                 lastCommentRepliedTo = thingID;
                 dealtWith++;
                 if (dealtWith >= count) {
@@ -107,7 +110,7 @@ function findUnconfirmedTip(username, callback) {
         }
     }
     interval = setInterval(function() {
-        find(interval);
+        find();
     }, 2000);
     find();
 }
