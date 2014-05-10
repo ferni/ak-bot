@@ -1,8 +1,9 @@
 var akb = {};
 var footer = '\n\n \n\n***\n\n' +
-    '[^(^Tip )](https://www.changetip.com/tip-online/reddit) ' +
-    '^(^to ^get ^this ^bot ^attached ^to ^you. ) ' +
-    '[^(^Detach ^here)](http://www.reddit.com)^^.';
+    '^(^Tip ^with )' +
+    '[^(^changetip )](https://www.changetip.com/tip-online/reddit) ' +
+    '^(^to ^get ^this ^bot ^worship ^you. ^Cancel ^by ^sending ) ' +
+    '[^(^this ^message)](http://www.reddit.com)^^.';
 akb.replies = {
     standard: [
         'Well put!',
@@ -33,7 +34,7 @@ akb.replies = {
         '(name), you\'re the best.',//generous tip
         'No, you\'re the best!',//when improving generous tip
         'Thank you (name). Pretty cool username btw.',
-        'You\'re pretty cool! I bet there\'s lots of interesting stuff in your history.',
+        'You\'re pretty cool! Friended you :).',
         'You\'re my new idol.'
     ]
 };
