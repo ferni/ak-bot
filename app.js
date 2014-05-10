@@ -7,10 +7,11 @@ var creds = require('./credentials'),
 
 var lastCommentRepliedTo = 't1_ch33hcb',
     lastCheckTime = new Date(),
-    timeBetweenChecks = 30500;
+    timeBetweenChecks = 30500,
+    unconfirmedTips = [];
 
 
-function dealWithComments(bot) {
+function handleComments(bot) {
     return function(comments) {
         var count = _.size(comments),
             dealtWith = 0;
@@ -50,7 +51,7 @@ function checkComments(bot) {
     }
     setTimeout(function() {
         lastCheckTime = new Date();
-        bot.listing('/r/friends/comments', {before: lastCommentRepliedTo}).then(dealWithComments(bot));
+        bot.listing('/r/friends/comments', {before: lastCommentRepliedTo}).then(handleComments(bot));
     }, wait);
 }
 
@@ -72,12 +73,58 @@ function itsATip(message) {
         message.body.indexOf('Hi AssKissingBot,\n\n**You\'ve been tipped with /r/changetip!**') === 0;
 }
 
+function itsAnUnconfirmedTip(message) {
+    return message.author !== 'changetip' &&
+        message.body.indexOf('/u/changetip') > -1;
+}
+
 function parseTip(text) {
     var words = text.substring(63).split(' ', 9),
-        user = words[2].substring(3),
+        username = words[2].substring(3),
         amount = words[5],
         unit = words[6];
-    console.log('tip: user: ' + user + '; amount: ' + amount + '; unit: ' + unit);
+    console.log('tip: user: ' + username + '; amount: ' + amount + '; unit: ' + unit);
+    return {
+        username: username,
+        amount: amount,
+        unit: unit
+    };
+}
+
+function findUnconfirmedTip(username, callback) {
+    var interval, tryNumber = 0;
+    function find() {
+        var tip = _.find(unconfirmedTips, function(t) {
+            return t.author === username;
+        });
+        tryNumber++;
+        if (tip) {
+            callback(tip);
+            clearInterval(interval);
+        } else if (tryNumber > 5) {
+            callback(false);
+            clearInterval(interval);
+        }
+    }
+    interval = setInterval(function() {
+        find(interval);
+    }, 2000);
+    find();
+}
+
+function handleTip(bot, tipMessage) {
+    var tip = parseTip(tipMessage.body);
+    bot.post('http://www.reddit.com/api/friend', {
+        form: {
+            name: tip.username,
+            container: 't2_fwctc',//AKB fullname
+            type: 'friend',
+            uh: bot.session.modhash
+        }
+    }).then(function() {
+        console.log(tip.username + ' is now my friend!');
+    });
+
 }
 
 function checkReplies(bot) {
@@ -90,9 +137,16 @@ function checkReplies(bot) {
             }
             first = false;
             console.log(m.author + ': "' + m.body + '"');
+            console.log(JSON.stringify(m));
+            /*
+            if (itsAnUnconfirmedTip(m)) {
+                console.log('I think ' + m.author + ' just tipped me. Waiting confirmation.');
+                unconfirmedTips.push(m);
+            }*/
+
             if (itsATip(m)) {
                 console.log('I\'ve been totally tipped!');
-                parseTip(m.body);
+                handleTip(bot, m);
             } else if (m.author === 'changetip') {
                 console.log('WARNING: Got a message from changetip that' +
                     ' was not detected as a tip.');
