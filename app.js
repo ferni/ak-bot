@@ -95,14 +95,33 @@ function checkComments(bot) {
     }, wait);
 }
 
+/**
+ * Devuelve un array de
+ * {date:int, name:String (username), id:String (full name)}
+ * @param bot
+ * @returns {Array}
+ */
 function getFriends(bot) {
     return bot.get('https://ssl.reddit.com/prefs/friends.json').then(function (friends) {
         return friends[0].data.children;
     });
 }
 
-function isFriend(bot) {
+function updateFriends(bot) {
+    return getFriends(bot).then(function(f) {
+        var friendList = '';
+        friends = f;
+        _.each(friends, function(f2) {
+            friendList += f2.name + ' ';
+        });
+        console.log('My friends are now: ' + friendList);
+    });
+}
 
+function isFriend(fullID) {
+    return _.any(friends, function(f) {
+        return f.id === fullID;
+    });
 }
 
 function updateLastComment(bot) {
@@ -167,8 +186,8 @@ function handleTip(bot, tipMessage) {
         }
     }).then(function() {
         console.log(tip.username + ' is now my friend!');
+        updateFriends(bot);
     });
-
 }
 
 function checkReplies(bot) {
@@ -216,10 +235,14 @@ function checkReplies(bot) {
 }
 
 nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
-    //updateLastComment(bot).then(function() {
+    updateFriends(bot).then(function() {
+        console.log('friends updated, checking replies');
+        setInterval(function() {
+            checkReplies(bot);
+        }, 35000);
+    });
+    /*//updateLastComment(bot).then(function() {
         checkComments(bot);
     //});
-    setInterval(function() {
-        checkReplies(bot);
-    }, 35000);
+    */
 });
