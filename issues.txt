@@ -1,0 +1,3 @@
+cuando se desuscribe un friend, puede quedar colgado el "last commment replied to"
+porque no figura en amigos anymore
+---------
