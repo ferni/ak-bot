@@ -1,9 +1,10 @@
 var akb = {};
 akb.cancelMessage = 'Hey man, can you please stop being so annoying?';
 var footer = '\n\n \n\n***\n\n' +
-    '^(^Tip ^with )' +
-    '[^(^changetip )](https://www.changetip.com/tip-online/reddit) ' +
-    '^(^to ^make ^this ^bot ^worship ^you. ^Cancel ^by ^sending ) ' +
+    '^(^To ^make ^this ^bot ^worship ^you, '+
+    '^tip ^it ^with )' +
+    '[^(^changetip )](https://www.changetip.com/tip-online/reddit). ' +
+    '^Cancel ^by ^sending ) ' +
     '[^(^this ^message)](http://www.reddit.com/message/compose?' +
     'to=AssKissingBot&subject=Please%20stop&message=' +
     encodeURI(akb.cancelMessage) + ')^^.';
