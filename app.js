@@ -5,10 +5,11 @@ var creds = require('./credentials'),
     akb = require('./akb'),
     _ = require('underscore')._;
 
-var lastCommentRepliedTo = 't1_ch33hcb',
+var lastCommentRepliedTo = 't1_ch4w3kn',
     lastCheckTime = new Date(),
     timeBetweenChecks = 30500,
-    unconfirmedTips = [];
+    unconfirmedTips = [],
+    friends = [];
 
 
 function handleComments(bot) {
@@ -23,13 +24,49 @@ function handleComments(bot) {
         }
         console.log(JSON.stringify(comments));
         _.each(comments, function(c, thingID) {
+            //c structure:
+            /*
+            - subreddit_id
+            - link_title
+            - link_author (String username)
+            - likes (Array o null)
+            - replies (Array o null)
+            - saved (Bool)
+            - id (sin el type prefix)
+            - gilded
+            - author (String username)
+            - parent_id (full name)
+            - approved_by
+            - body (texto del comentario)
+            - edited (Bool)
+            - author_flair_css_class
+            - downs
+            - body_html
+            - link_id (full name)
+            - score_hidden (Bool)
+            - name (full name, como id pero con prefix)
+            - created (int)
+            - author_flair_text
+            - link_url
+            - created_utc (int)
+            - ups
+            - num_reports
+            - distinguished
+            */
             var reply;
             console.log('CommentID: ' + thingID + '; Comment text:' + c.body);
-            console.log('COMMENT (c):' + JSON.stringify(c));
             reply = akb.getComment(c);
-            bot.comment(thingID, reply).then(function(c1) {
-                console.log('COMMENT (c1):' + JSON.stringify(c1));
-                console.log('@' + c1.author + ': ' + reply);
+            bot.comment(thingID, reply).then(function(botComment) {
+                //botComment structure:
+                /*
+                botComment.json.data.things[0].data.
+                (data tiene):
+                - parent (thing id)
+                - link (link id)
+                - replies (array)
+                - id ("t1_whatever")
+                */
+                console.log('@' + c.author + ': ' + reply);
                 lastCommentRepliedTo = thingID;
                 dealtWith++;
                 if (dealtWith >= count) {
@@ -62,6 +99,10 @@ function getFriends(bot) {
     return bot.get('https://ssl.reddit.com/prefs/friends.json').then(function (friends) {
         return friends[0].data.children;
     });
+}
+
+function isFriend(bot) {
+
 }
 
 function updateLastComment(bot) {
@@ -175,9 +216,9 @@ function checkReplies(bot) {
 }
 
 nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
-    updateLastComment(bot).then(function() {
+    //updateLastComment(bot).then(function() {
         checkComments(bot);
-    });
+    //});
     setInterval(function() {
         checkReplies(bot);
     }, 35000);
