@@ -190,6 +190,20 @@ function handleTip(bot, tipMessage) {
     });
 }
 
+function unfriend(bot, username) {
+    bot.post('http://www.reddit.com/api/unfriend', {
+        form: {
+            name: username,
+            container: 't2_fwctc',//AKB fullname
+            type: 'friend',
+            uh: bot.session.modhash
+        }
+    }).then(function() {
+        console.log(username + ' is no longer my friend');
+        updateFriends(bot);
+    });
+}
+
 function checkReplies(bot) {
     bot.listing('/message/unread').then(function(messages) {
         var ids = '',
@@ -201,18 +215,23 @@ function checkReplies(bot) {
             first = false;
             console.log(m.author + ': "' + m.body + '"');
             console.log(JSON.stringify(m));
-            /*
-            if (itsAnUnconfirmedTip(m)) {
-                console.log('I think ' + m.author + ' just tipped me. Waiting confirmation.');
-                unconfirmedTips.push(m);
-            }*/
+            if (m.subject === 'Please stop') {
+                //cancel subscription (unfriend)
+                unfriend(bot, m.author);
+            } else {
+                /*
+                 if (itsAnUnconfirmedTip(m)) {
+                 console.log('I think ' + m.author + ' just tipped me. Waiting confirmation.');
+                 unconfirmedTips.push(m);
+                 }*/
 
-            if (itsATip(m)) {
-                console.log('I\'ve been totally tipped!');
-                handleTip(bot, m);
-            } else if (m.author === 'changetip') {
-                console.log('WARNING: Got a message from changetip that' +
-                    ' was not detected as a tip.');
+                if (itsATip(m)) {
+                    console.log('I\'ve been totally tipped!');
+                    handleTip(bot, m);
+                } else if (m.author === 'changetip') {
+                    console.log('WARNING: Got a message from changetip that' +
+                        ' was not detected as a tip.');
+                }
             }
 
             ids += id;
