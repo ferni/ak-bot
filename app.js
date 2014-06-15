@@ -3,12 +3,12 @@ var creds = require('./credentials'),
     nodewhal = require('nodewhal'),
     akb = require('./akb'),
     _ = require('underscore')._,
-    friends = require('./friends');
+    friends = require('./friends'),
+    tips = require('./tips');
 
 var lastCommentRepliedTo = 't1_ch4w3kn',
     lastCheckTime = new Date(),
-    timeBetweenChecks = 30500,
-    unconfirmedTips = [];
+    timeBetweenChecks = 30500;
 
 
 RSVP.on('error', function(reason) {
@@ -106,59 +106,12 @@ function updateLastComment(bot) {
     })
 }
 
-function itsATip(message) {
-    return message.author === 'changetip' &&
-        message.body.indexOf('Hi AssKissingBot,\n\n**You received a Bitcoin tip via /r/changetip!**') === 0;
-}
-
-function itsAnUnconfirmedTip(message) {
-    return message.author !== 'changetip' &&
-        message.body.indexOf('/u/changetip') > -1;
-}
-
-function parseTip(text) {
-    var words = text.substring(63).split(' ', 9),
-        username = words[3].substring(3),//(remove the /u/)
-        amount = words[6],
-        unit = words[7];
-    console.log('tip: user: ' + username + '; amount: ' + amount + '; unit: ' + unit);
-    return {
-        username: username,
-        amount: amount,
-        unit: unit
-    };
-}
-
-function findUnconfirmedTip(username, callback) {
-    var interval, tryNumber = 0;
-    function find() {
-        var tip = _.find(unconfirmedTips, function(t) {
-            return t.author === username;
-        });
-        tryNumber++;
-        if (tip) {
-            callback(tip);
-            clearInterval(interval);
-        } else if (tryNumber > 5) {
-            callback(false);
-            clearInterval(interval);
-        }
-    }
-    interval = setInterval(function() {
-        find();
-    }, 2000);
-    find();
-}
-
-function handleTip(bot, tipMessage) {
-    var tip = parseTip(tipMessage.body);
-    friends.friend(tip.username);
-}
 
 function checkReplies(bot) {
     bot.listing('/message/unread').then(function(messages) {
         var ids = '',
-            first = true;
+            first = true,
+            tip;
         _.each(messages, function(m, id) {
             if (!first) {
                 ids += ',';
@@ -171,17 +124,14 @@ function checkReplies(bot) {
                 friends.unfriend(m.author);
             } else {
                 /*
-                 if (itsAnUnconfirmedTip(m)) {
+                 if (tips.itsAnUnconfirmedTip(m)) {
                  console.log('I think ' + m.author + ' just tipped me. Waiting confirmation.');
                  unconfirmedTips.push(m);
                  }*/
-
-                if (itsATip(m)) {
+                tip = tips.tryParse(m);
+                if (tip) {
                     console.log('I\'ve been totally tipped!');
-                    handleTip(bot, m);
-                } else if (m.author === 'changetip') {
-                    console.log('WARNING: Got a message from changetip that' +
-                        ' was not detected as a tip.');
+                    friends.friend(tip.username);
                 }
             }
 
