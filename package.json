@@ -4,5 +4,10 @@
     "main": "./app.js",
     "engines": {
         "node": ">=0.8"
+    },
+    "dependencies": {
+        "underscore": "1.6.0",
+        "rsvp":     "3.0",
+        "request":  "2.27.0"
     }
 }

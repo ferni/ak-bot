@@ -1,16 +1,20 @@
-
-//    r.comment('t3_23za7o'
 var creds = require('./credentials'),
+    RSVP = require('rsvp'),
     nodewhal = require('nodewhal'),
     akb = require('./akb'),
-    _ = require('underscore')._;
+    _ = require('underscore')._,
+    friends = require('./friends');
 
 var lastCommentRepliedTo = 't1_ch4w3kn',
     lastCheckTime = new Date(),
     timeBetweenChecks = 30500,
-    unconfirmedTips = [],
-    friends = [];
+    unconfirmedTips = [];
 
+
+RSVP.on('error', function(reason) {
+    console.log('Uncaught error within RSVP promise:');
+    console.assert(false, reason);
+});
 
 function handleComments(bot) {
     return function(comments) {
@@ -95,35 +99,6 @@ function checkComments(bot) {
     }, wait);
 }
 
-/**
- * Devuelve un array de
- * {date:int, name:String (username), id:String (full name)}
- * @param bot
- * @returns {Array}
- */
-function getFriends(bot) {
-    return bot.get('https://ssl.reddit.com/prefs/friends.json').then(function (friends) {
-        return friends[0].data.children;
-    });
-}
-
-function updateFriends(bot) {
-    return getFriends(bot).then(function(f) {
-        var friendList = '';
-        friends = f;
-        _.each(friends, function(f2) {
-            friendList += f2.name + ' ';
-        });
-        console.log('My friends are now: ' + friendList);
-    });
-}
-
-function isFriend(fullID) {
-    return _.any(friends, function(f) {
-        return f.id === fullID;
-    });
-}
-
 function updateLastComment(bot) {
     return bot.listing('/user/AssKissingBot/comments', {max: 1}).then(function(comments) {
         lastCommentRepliedTo = _.values(comments)[0].parent_id;
@@ -177,31 +152,7 @@ function findUnconfirmedTip(username, callback) {
 
 function handleTip(bot, tipMessage) {
     var tip = parseTip(tipMessage.body);
-    bot.post('http://www.reddit.com/api/friend', {
-        form: {
-            name: tip.username,
-            container: 't2_fwctc',//AKB fullname
-            type: 'friend',
-            uh: bot.session.modhash
-        }
-    }).then(function() {
-        console.log(tip.username + ' is now my friend!');
-        updateFriends(bot);
-    });
-}
-
-function unfriend(bot, username) {
-    bot.post('http://www.reddit.com/api/unfriend', {
-        form: {
-            name: username,
-            container: 't2_fwctc',//AKB fullname
-            type: 'friend',
-            uh: bot.session.modhash
-        }
-    }).then(function() {
-        console.log(username + ' is no longer my friend');
-        updateFriends(bot);
-    });
+    friends.friend(tip.username);
 }
 
 function checkReplies(bot) {
@@ -217,7 +168,7 @@ function checkReplies(bot) {
             console.log(JSON.stringify(m));
             if (m.subject === 'Please stop') {
                 //cancel subscription (unfriend)
-                unfriend(bot, m.author);
+                friends.unfriend(m.author);
             } else {
                 /*
                  if (itsAnUnconfirmedTip(m)) {
@@ -254,7 +205,7 @@ function checkReplies(bot) {
 }
 
 nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
-    updateFriends(bot).then(function() {
+    friends.init(bot).then(function() {
         console.log('friends updated, checking replies');
         setInterval(function() {
             checkReplies(bot);
@@ -264,4 +215,8 @@ nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(fun
         checkComments(bot);
     //});
     */
+}).catch(function(error) {
+    console.log('Something went wrong');
+    console.error(error.stack || error);
+    throw error;
 });
