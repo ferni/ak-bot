@@ -133,7 +133,7 @@ function updateLastComment(bot) {
 
 function itsATip(message) {
     return message.author === 'changetip' &&
-        message.body.indexOf('Hi AssKissingBot,\n\n**You\'ve been tipped with /r/changetip!**') === 0;
+        message.body.indexOf('Hi AssKissingBot,\n\n**You received a Bitcoin tip via /r/changetip!**') === 0;
 }
 
 function itsAnUnconfirmedTip(message) {
@@ -143,9 +143,9 @@ function itsAnUnconfirmedTip(message) {
 
 function parseTip(text) {
     var words = text.substring(63).split(' ', 9),
-        username = words[2].substring(3),
-        amount = words[5],
-        unit = words[6];
+        username = words[3].substring(3),//(remove the /u/)
+        amount = words[6],
+        unit = words[7];
     console.log('tip: user: ' + username + '; amount: ' + amount + '; unit: ' + unit);
     return {
         username: username,
