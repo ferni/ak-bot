@@ -123,11 +123,6 @@ function checkReplies(bot) {
                 //cancel subscription (unfriend)
                 friends.unfriend(m.author);
             } else {
-                /*
-                 if (tips.itsAnUnconfirmedTip(m)) {
-                 console.log('I think ' + m.author + ' just tipped me. Waiting confirmation.');
-                 unconfirmedTips.push(m);
-                 }*/
                 tip = tips.tryParse(m);
                 if (tip) {
                     console.log('I\'ve been totally tipped!');
@@ -138,14 +133,13 @@ function checkReplies(bot) {
             ids += id;
         });
         if (_.size(messages) > 0) {
-            console.log('marking as read: ' + ids);
             bot.post('http://www.reddit.com/api/read_message', {
                 form: {
                     id: ids,
                     uh: bot.session.modhash
                 }
             }).then(function() {
-                console.log('messages marked as read.');
+                //console.log('messages marked as read.');
             }, function(error) {
                 console.log('Error reading messages: ' + error);
             });
