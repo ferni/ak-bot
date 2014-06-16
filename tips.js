@@ -2,9 +2,10 @@
  * Created by Fer on 15/06/2014.
  */
 
-var _ = require('underscore')._;
+var _ = require('underscore')._,
+    Comments = require('./comments');
 
-module.exports = (function() {
+module.exports = Tips = (function() {
     var unconfirmedTips = [],
         tips = [];
 
@@ -23,10 +24,6 @@ module.exports = (function() {
         array.splice(index, 1);
     }
 
-    function postThanksMessage(username, commentID) {
-        console.log('I should thank ' + username + ' replying to ' + commentID);
-    }
-
     function lookForMessageConfirmationMatch(last) {
         var tip = last.tip,
             unconfirmed = last.unconfirmed;
@@ -42,7 +39,7 @@ module.exports = (function() {
         if (tip && unconfirmed) {
             removeFromArray(tips, tip);
             removeFromArray(unconfirmedTips, unconfirmed);
-            postThanksMessage(tip.username, unconfirmed.name);
+            Comments.thankTip(unconfirmed.name, tip);
         }
     }
 

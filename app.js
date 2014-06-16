@@ -3,8 +3,9 @@ var creds = require('./credentials'),
     nodewhal = require('nodewhal'),
     akb = require('./akb'),
     _ = require('underscore')._,
-    friends = require('./friends'),
-    tips = require('./tips');
+    Friends = require('./friends'),
+    Tips = require('./tips'),
+    Comments = require('./comments');
 
 var lastCommentRepliedTo = 't1_ch4w3kn',
     lastCheckTime = new Date(),
@@ -121,12 +122,12 @@ function checkReplies(bot) {
             console.log(JSON.stringify(m));
             if (m.subject === 'Please stop') {
                 //cancel subscription (unfriend)
-                friends.unfriend(m.author);
+                Friends.unfriend(m.author);
             } else {
-                tip = tips.tryParse(m);
+                tip = Tips.tryParse(m);
                 if (tip) {
                     console.log('I\'ve been totally tipped!');
-                    friends.friend(tip.username);
+                    Friends.friend(tip.username);
                 }
             }
 
@@ -149,7 +150,8 @@ function checkReplies(bot) {
 }
 
 nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
-    friends.init(bot).then(function() {
+    Comments.init(bot);
+    Friends.init(bot).then(function() {
         console.log('friends updated, checking replies');
         setInterval(function() {
             checkReplies(bot);

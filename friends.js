@@ -4,7 +4,7 @@
 
 var _ = require('underscore')._;
 
-module.exports = (function() {
+module.exports = Friends = (function() {
     var bot, friends = [];
 
     function updateFriends() {
