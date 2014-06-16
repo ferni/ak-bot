@@ -1,7 +1,6 @@
 var creds = require('./credentials'),
     RSVP = require('rsvp'),
     nodewhal = require('nodewhal'),
-    akb = require('./akb'),
     _ = require('underscore')._,
     Friends = require('./friends'),
     Tips = require('./tips'),
@@ -60,8 +59,7 @@ function handleComments(bot) {
             */
             var reply;
             console.log('CommentID: ' + thingID + '; Comment text:' + c.body);
-            reply = akb.getComment(c);
-            bot.comment(thingID, reply).then(function(botComment) {
+            Comments.praise(thingID).then(function(botComment) {
                 //botComment structure:
                 /*
                 botComment.json.data.things[0].data.

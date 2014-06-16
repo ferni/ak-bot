@@ -14,6 +14,27 @@ module.exports = Comments = (function() {
             '[^(^here)](http://www.reddit.com/message/compose?' +
             'to=AssKissingBot&subject=Please%20stop&message=' +
             encodeURI(cancelMessage) + ')^^.',
+        praises = [
+            'Well put!',
+            'Excellent comment, sir.',
+            'I completely agree.',
+            'I wish I could upvote you more than once!',
+            'I wish I had your eloquence.',
+            'You\'re so smart!',
+            'You\'re so funny!',
+            'Wow, you blew me away.',
+            'I think this is your best comment yet.',
+            'You have such wisdom.',
+            'How I haven\'t thought of that?!',
+            'If this doesn\'t deserve gold, I don\'t know what does.',
+            'A smashing comment.',
+            'You are a gentleman and a scholar.',
+            'LOL!',
+            'You\'re an inspiration to me.',
+            'This should be the top comment.',
+            'To the top with you!',
+            'Best comment, hands down.',
+            '/thread'],
         thanksStandard = [
             'Thanks! We\'re best friends now!',
             'You made my day, I hope you don\'t mind if I tag along.',
@@ -47,6 +68,10 @@ module.exports = Comments = (function() {
     return {
         init: function(nodewhalUser) {
             bot = nodewhalUser;
+        },
+        praise: function(commentID) {
+            var reply = pickRandom(praises);
+            return comment(commentID, reply);
         },
         thankTip: function(commentID, tip) {
             //if tip > x: pick generous targeted message
