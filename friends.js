@@ -6,25 +6,17 @@ var _ = require('underscore')._;
 
 module.exports = Friends = (function() {
     var bot, friends = [];
-
-    function printFriends() {
-        var friendList = '';
-        _.each(friends, function(f2) {
-            //f2 structure:
-            /*
-             - name (username)
-             - id (full id)
-             - date (int)
-             */
-            friendList += f2.name + ' ';
-        });
-        console.log('My friends are now: ' + friendList);
-    }
+    //friend structure:
+    /*
+     - name (username)
+     - id (full id)
+     - date (int)
+     */
 
     function updateFriends() {
         return bot.get('https://ssl.reddit.com/prefs/friends.json').then(function(f) {
             friends = f[0].data.children;
-            printFriends();
+            console.log('My friends are now: ' + _.pluck(friends, 'name').toString());
         });
     }
 
