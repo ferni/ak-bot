@@ -2,7 +2,7 @@
  * Created by Fer on 16/06/2014.
  */
 
-var _ = require('underscore')._;
+var lastReplies = require('./last-replies');
 
 module.exports = Comments = (function() {
     var bot,
@@ -59,24 +59,25 @@ module.exports = Comments = (function() {
         return stringArray[index];
     }
 
-
-    function comment(thingID, message) {
-        message += footer;
-        return bot.comment(thingID, message);
+    function comment(thingID, message, username) {
+        return bot.comment(thingID, message + footer).then(function() {
+            lastReplies.add(username, thingID);
+            console.log('@' + username + ': ' + message);
+        });
     }
 
     return {
         init: function(nodewhalUser) {
             bot = nodewhalUser;
         },
-        praise: function(commentID) {
+        praise: function(commentID, username) {
             var reply = pickRandom(praises);
-            return comment(commentID, reply);
+            return comment(commentID, reply, username);
         },
         thankTip: function(commentID, tip) {
             //if tip > x: pick generous targeted message
             var reply = pickRandom(thanksStandard);
-            return comment(commentID, reply);
+            return comment(commentID, reply, tip.username);
         }
     };
 }());

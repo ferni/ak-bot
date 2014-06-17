@@ -4,10 +4,10 @@ var creds = require('./credentials'),
     _ = require('underscore')._,
     Friends = require('./friends'),
     Tips = require('./tips'),
-    Comments = require('./comments');
+    Comments = require('./comments'),
+    lastReplies = require('./last-replies');
 
-var lastCommentRepliedTo = 't1_ch4w3kn',
-    lastCheckTime = new Date(),
+var lastCheckTime = new Date(),
     timeBetweenChecks = 30500;
 
 
@@ -27,7 +27,11 @@ function handleComments(bot) {
             checkComments(bot);
         }
         console.log(JSON.stringify(comments));
-        _.each(comments, function(c, thingID) {
+        _.chain(comments)
+        .filter(function(c) {
+            return Friends.isFriend(c.author);
+        })
+        .each(function(c) {
             //c structure:
             /*
             - subreddit_id
@@ -57,9 +61,8 @@ function handleComments(bot) {
             - num_reports
             - distinguished
             */
-            var reply;
-            console.log('CommentID: ' + thingID + '; Comment text:' + c.body);
-            Comments.praise(thingID).then(function(botComment) {
+            console.log('CommentID: ' + c.name + '; Comment text:' + c.body);
+            Comments.praise(c.name, c.author).then(function(botComment) {
                 //botComment structure:
                 /*
                 botComment.json.data.things[0].data.
@@ -69,8 +72,6 @@ function handleComments(bot) {
                 - replies (array)
                 - id ("t1_whatever")
                 */
-                console.log('@' + c.author + ': ' + reply);
-                lastCommentRepliedTo = thingID;
                 dealtWith++;
                 if (dealtWith >= count) {
                     checkComments(bot);
@@ -82,7 +83,6 @@ function handleComments(bot) {
                     checkComments(bot);
                 }
             });
-
         });
     }
 }
@@ -93,18 +93,17 @@ function checkComments(bot) {
         wait = 0;
     }
     setTimeout(function() {
+        var options;
+        if (lastReplies.getLast()) {
+            options = {before: lastReplies.getLast()};
+        } else {
+            options = {max: 1};
+        }
         lastCheckTime = new Date();
-        bot.listing('/r/friends/comments', {before: lastCommentRepliedTo}).then(handleComments(bot));
+        bot.listing('/r/friends/comments', options)
+            .then(handleComments(bot));
     }, wait);
 }
-
-function updateLastComment(bot) {
-    return bot.listing('/user/AssKissingBot/comments', {max: 1}).then(function(comments) {
-        lastCommentRepliedTo = _.values(comments)[0].parent_id;
-        console.log('last comment: ' + lastCommentRepliedTo);
-    })
-}
-
 
 function checkReplies(bot) {
     bot.listing('/message/unread').then(function(messages) {
@@ -154,11 +153,8 @@ nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(fun
         setInterval(function() {
             checkReplies(bot);
         }, 35000);
-    });
-    /*//updateLastComment(bot).then(function() {
         checkComments(bot);
-    //});
-    */
+    });
 }).catch(function(error) {
     console.log('Something went wrong');
     console.error(error.stack || error);

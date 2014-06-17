@@ -25,9 +25,9 @@ module.exports = Friends = (function() {
             bot = nodewhalUser;
             return updateFriends();
         },
-        isFriend: function(fullID) {
+        isFriend: function(username) {
             return _.any(friends, function(f) {
-                return f.id === fullID;
+                return f.name === username;
             });
         },
         unfriend: function(username) {
