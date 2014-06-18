@@ -23,13 +23,9 @@ function handleComments(bot) {
         });
         var count = _.size(comments),
             dealtWith = 0;
-        if (count > 0) {
-            console.log('Found ' + count + '!');
-        } else {
-            console.log('Found none.');
+        if (count <= 0) {
             checkComments(bot);
         }
-        console.log(JSON.stringify(comments));
         _.each(comments, function(c) {
             //c structure:
             /*
@@ -60,7 +56,7 @@ function handleComments(bot) {
             - num_reports
             - distinguished
             */
-            console.log('CommentID: ' + c.name + '; Comment text:' + c.body);
+            console.log(c.author + ': "' + c.body + '"');
             Comments.praise(c.name, c.author).then(function(botComment) {
                 //botComment structure:
                 /*
@@ -114,8 +110,7 @@ function checkReplies(bot) {
                 ids += ',';
             }
             first = false;
-            console.log(m.author + ': "' + m.body + '"');
-            console.log(JSON.stringify(m));
+            console.log(m.author + ' @me: "' + m.body + '"');
             if (m.subject === 'Please stop') {
                 //cancel subscription (unfriend)
                 Friends.unfriend(m.author);
