@@ -18,6 +18,9 @@ RSVP.on('error', function(reason) {
 
 function handleComments(bot) {
     return function(comments) {
+        comments = _.filter(comments, function(c) {
+            return Friends.isFriend(c.author);
+        });
         var count = _.size(comments),
             dealtWith = 0;
         if (count > 0) {
@@ -27,11 +30,7 @@ function handleComments(bot) {
             checkComments(bot);
         }
         console.log(JSON.stringify(comments));
-        _.chain(comments)
-        .filter(function(c) {
-            return Friends.isFriend(c.author);
-        })
-        .each(function(c) {
+        _.each(comments, function(c) {
             //c structure:
             /*
             - subreddit_id
