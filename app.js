@@ -57,7 +57,7 @@ function handleComments(bot) {
             - num_reports
             - distinguished
             */
-            console.log(c.author + ': "' + c.body + '"');
+            console.log(c.author + ': ' + c.body);
             Comments.praise(c.name, c.author).then(function(botComment) {
                 //botComment structure:
                 /*
@@ -111,7 +111,7 @@ function checkReplies(bot) {
                 ids += ',';
             }
             first = false;
-            console.log(m.author + ' @me: "' + m.body + '"');
+            console.log(m.author + ' @me: ' + m.body);
             if (m.subject === 'Please stop') {
                 //cancel subscription (unfriend)
                 Friends.unfriend(m.author);
