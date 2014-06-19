@@ -28,7 +28,7 @@ module.exports = Comments = (function() {
             'How I haven\'t thought of that?!',
             'If this doesn\'t deserve gold, I don\'t know what does.',
             'A smashing comment.',
-            'You are a gentleman and a scholar.',
+            'You sir, are a gentleman and a scholar.',
             'LOL!',
             'You\'re an inspiration to me.',
             'This should be the top comment.',
