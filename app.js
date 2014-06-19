@@ -19,7 +19,8 @@ RSVP.on('error', function(reason) {
 function handleComments(bot) {
     return function(comments) {
         comments = _.filter(comments, function(c) {
-            return Friends.isFriend(c.author);
+            return Friends.isFriend(c.author) &&
+                !(c.body.indexOf('/u/changetip') > -1);
         });
         var count = _.size(comments),
             dealtWith = 0;
