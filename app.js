@@ -5,7 +5,8 @@ var creds = require('./credentials'),
     Friends = require('./friends'),
     Tips = require('./tips'),
     Comments = require('./comments'),
-    lastReplies = require('./last-replies');
+    lastReplies = require('./last-replies'),
+    userThreadRegistry = {};
 
 var lastCheckTime = new Date(),
     timeBetweenChecks = 30500;
@@ -15,6 +16,24 @@ RSVP.on('error', function(reason) {
     console.log('Uncaught error within RSVP promise:');
     console.assert(false, reason);
 });
+
+function shouldReply(comment) {
+    return !userThreadRegistry[comment.link_id] ||
+        !userThreadRegistry[comment.link_id][comment.author];
+}
+
+function registerComment(comment) {
+    var thread;
+    if (!userThreadRegistry[comment.link_id]) {
+        userThreadRegistry[comment.link_id] = {};
+    }
+    thread = userThreadRegistry[comment.link_id];
+    if (!thread[comment.author]) {
+        thread[comment.author] = 1;
+    } else {
+        thread[comment.author]++;
+    }
+}
 
 function handleComments(bot) {
     return function(comments) {
@@ -58,27 +77,36 @@ function handleComments(bot) {
             - distinguished
             */
             console.log(c.author + ': ' + c.body);
-            Comments.praise(c.name, c.author).then(function(botComment) {
-                //botComment structure:
-                /*
-                botComment.json.data.things[0].data.
-                (data tiene):
-                - parent (thing id)
-                - link (link id)
-                - replies (array)
-                - id ("t1_whatever")
-                */
+            if (shouldReply(c)) {
+                Comments.praise(c.name, c.author).then(function(botComment) {
+                    //botComment structure:
+                    /*
+                     botComment.json.data.things[0].data.
+                     (data tiene):
+                     - parent (thing id)
+                     - link (link id)
+                     - replies (array)
+                     - id ("t1_whatever")
+                     */
+                    registerComment(c);
+                    dealtWith++;
+                    if (dealtWith >= count) {
+                        checkComments(bot);
+                    }
+                }, function(error) {
+                    console.log('There was a problem trying to comment: ' + error);
+                    dealtWith++;
+                    if (dealtWith >= count) {
+                        checkComments(bot);
+                    }
+                });
+            } else {
                 dealtWith++;
                 if (dealtWith >= count) {
                     checkComments(bot);
                 }
-            }, function(error) {
-                console.log('There was a problem trying to comment: ' + error);
-                dealtWith++;
-                if (dealtWith >= count) {
-                    checkComments(bot);
-                }
-            });
+            }
+
         });
     }
 }
