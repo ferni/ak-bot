@@ -13,7 +13,7 @@ module.exports = Tips = (function() {
     function itsATip(message) {
         var users = message.body.match(userRegExp);
         return message.author === 'changetip' &&
-            users.length >= 2;
+            users.length >= 1;
     }
 
     function itsAnUnconfirmedTip(message) {
