@@ -193,7 +193,7 @@ function checkReplies(bot) {
     });
 }
 
-nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
+nodewhal('AssKissingBot/0.2 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
     Comments.init(bot);
     Friends.init(bot).then(lastReplies.init(bot).then(function() {
         console.log('friends updated, checking replies');
