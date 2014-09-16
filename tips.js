@@ -7,11 +7,13 @@ var _ = require('underscore')._,
 
 module.exports = Tips = (function() {
     var unconfirmedTips = [],
-        tips = [];
+        tips = [],
+        userRegExp = /\/u\/[a-z|\-|_|0-9]+/gi;
 
     function itsATip(message) {
+        var users = message.body.match(userRegExp);
         return message.author === 'changetip' &&
-            message.body.indexOf('Hi AssKissingBot,\n\n**You received a Bitcoin tip via /r/changetip!**') === 0;
+            users.length >= 2;
     }
 
     function itsAnUnconfirmedTip(message) {
@@ -52,10 +54,12 @@ module.exports = Tips = (function() {
                 return false;
             }
             if (itsATip(message)) {
-                var words = message.body.substring(63).split(' ', 9),
-                    username = words[3].substring(3),//(remove the /u/)
-                    amount = words[6],
-                    unit = words[7],
+                var text = message.body,
+                    fullUser = text.match(userRegExp)[0],
+                    words = text.substring(text.indexOf(fullUser)).split(' ', 5),
+                    username = fullUser.substring(3),//(remove the /u/)
+                    amount = words[3],
+                    unit = words[4],
                     tip = {
                         username: username,
                         amount: amount,

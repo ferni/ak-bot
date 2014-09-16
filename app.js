@@ -1,6 +1,6 @@
 var creds = require('./credentials'),
     RSVP = require('rsvp'),
-    nodewhal = require('nodewhal'),
+    nodewhal = require('./nodewhal.js'),
     _ = require('underscore')._,
     Friends = require('./friends'),
     Tips = require('./tips'),
@@ -107,30 +107,6 @@ function checkReplies(bot) {
             first = true,
             tip;
         _.each(messages, function(m, id) {
-            /*
-            m structure: {
-                "body":"asdfasdf",
-                "link_title":"asdfsadf",
-                "was_comment":true,
-                "first_message":null,
-                "name":"t1_ckjiq5x",
-                "first_message_name":null,
-                "created":1410863982,
-                "dest":"AssKissingBot",
-                "author":"frrrni",
-                "created_utc":1410835182,
-                "body_html":"&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;asdfasdf&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
-                "subreddit":"dugroup",
-                "parent_id":"t1_ci9cxab",
-                "distinguished":null,
-                "likes":null,
-                "context":"/r/dugroup/comments/28bp2y/asdfsadf/ckjiq5x?context=3",
-                "replies":null,
-                "new":true,
-                "id":"ckjiq5x",
-                "subject":"respuesta a comentario"
-             }
-             */
             if (!first) {
                 ids += ',';
             }
@@ -167,15 +143,21 @@ function checkReplies(bot) {
 
 nodewhal('AssKissingBot/0.1 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
     Comments.init(bot);
-    Friends.init(bot).then(function() {
+    Friends.init(bot).then(lastReplies.init(bot).then(function() {
         console.log('friends updated, checking replies');
         setInterval(function() {
             checkReplies(bot);
         }, 35000);
         checkComments(bot);
-    });
+    }));
 }).catch(function(error) {
     console.log('Something went wrong');
     console.error(error.stack || error);
     throw error;
 });
+
+require('http').createServer(function (request, response) {
+    response.writeHead(200, {'Content-Type': 'text/plain'});
+    response.end('Hello World\n');
+    console.log('someone requested the site!')
+}).listen(8080);

@@ -37,7 +37,7 @@ module.exports = Comments = (function() {
             '/thread'],
         thanksStandard = [
             'Thanks! We\'re best friends now!',
-            'You made my day, I hope you don\'t mind if I tag along.',
+            'You made my day, hope you don\'t mind if I tag along.',
             'Thank you! Wanna hang out?',
             'I\'ll follow you till the end!',
             //'Thank you <name>. Pretty cool username btw.',

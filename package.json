@@ -8,6 +8,7 @@
     "dependencies": {
         "underscore": "1.6.0",
         "rsvp":     "3.0",
-        "request":  "2.27.0"
+        "request":  "2.27.0",
+        "eventsource": ">=0.0.10"
     }
 }
