@@ -107,6 +107,30 @@ function checkReplies(bot) {
             first = true,
             tip;
         _.each(messages, function(m, id) {
+            /*
+             m structure: {
+             "body":"asdfasdf",
+             "link_title":"asdfsadf",
+             "was_comment":true,
+             "first_message":null,
+             "name":"t1_ckjiq5x",
+             "first_message_name":null,
+             "created":1410863982,
+             "dest":"AssKissingBot",
+             "author":"frrrni",
+             "created_utc":1410835182,
+             "body_html":"&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;asdfasdf&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+             "subreddit":"dugroup",
+             "parent_id":"t1_ci9cxab",
+             "distinguished":null,
+             "likes":null,
+             "context":"/r/dugroup/comments/28bp2y/asdfsadf/ckjiq5x?context=3",
+             "replies":null,
+             "new":true,
+             "id":"ckjiq5x",
+             "subject":"respuesta a comentario"
+             }
+             */
             if (!first) {
                 ids += ',';
             }
