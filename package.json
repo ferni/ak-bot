@@ -1,6 +1,6 @@
 {
     "name": "ass-kissing-bot",
-    "version": "0.2",
+    "version": "0.2.0",
     "main": "./app.js",
     "engines": {
         "node": ">=0.8"
