@@ -193,23 +193,32 @@ function checkReplies(bot) {
     });
 }
 
-nodewhal('AssKissingBot/0.2 by frrrni').login(creds.user, creds.passwd).then(function(bot) {
-    Comments.init(bot);
-    Friends.init(bot).then(lastReplies.init(bot).then(function() {
-        console.log('friends updated, checking replies');
-        setInterval(function() {
-            checkReplies(bot);
-        }, 35000);
-        checkComments(bot);
-    }));
-}).catch(function(error) {
-    console.log('Something went wrong');
-    console.error(error.stack || error);
-    throw error;
-});
+
 
 require('http').createServer(function (request, response) {
+    var url = require('url');
+    var url_parts = url.parse(request.url, true);
+    var query = url_parts.query;
+    var username = query.username,
+        pass = query.password;
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end('Hello World\n');
-    console.log('someone requested the site!')
+    console.log('someone requested the site!');
+    if (!username || !pass) return;
+    nodewhal('AssKissingBot/0.2 by frrrni').login(username, pass).then(function(bot) {
+        Comments.init(bot);
+        Friends.init(bot).then(lastReplies.init(bot).then(function() {
+            console.log('friends updated, checking replies');
+            setInterval(function() {
+                checkReplies(bot);
+            }, 35000);
+            checkComments(bot);
+        }));
+    }).catch(function(error) {
+        console.log('Something went wrong');
+        console.error(error.stack || error);
+        throw error;
+    });
+
+
 }).listen(8080);
