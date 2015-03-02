@@ -1,5 +1,4 @@
-var creds = require('./credentials'),
-    RSVP = require('rsvp'),
+var RSVP = require('rsvp'),
     nodewhal = require('./nodewhal.js'),
     _ = require('underscore')._,
     Friends = require('./friends'),
