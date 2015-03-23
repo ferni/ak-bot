@@ -7,6 +7,9 @@ var RSVP = require('rsvp'),
     lastReplies = require('./last-replies'),
     userThreadRegistry = {};
 
+require('./callme').init('https://fierce-beach-7085.herokuapp.com/',
+    'https://asskissingbot.herokuapp.com/');
+
 var lastCheckTime = new Date(),
     timeBetweenChecks = 30500;
 
