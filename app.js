@@ -11,12 +11,11 @@ require('./callme').init('https://fierce-beach-7085.herokuapp.com/',
     'https://asskissingbot.herokuapp.com/');
 
 var lastCheckTime = new Date(),
-    timeBetweenChecks = 30500;
+    timeBetweenChecks = 40500;
 
 
 RSVP.on('error', function(reason) {
-    console.log('Uncaught error within RSVP promise:');
-    console.assert(false, reason);
+    console.log('Uncaught error within RSVP promise:' + reason);
 });
 
 function shouldReply(comment) {
